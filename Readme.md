@@ -32,3 +32,7 @@ go run main.go
 
 The server periodically sends a broadcast to discover all clients trying to connect.
 Once you connect, follow the terminal instr!
+
+# To be added
+
+TLS implementation
