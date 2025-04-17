@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -33,6 +34,8 @@ func main() {
 		return
 	}
 	defer ln.Close()
+
+	go startUDPBroadcast()
 
 	go handleBroadcasting()     
 	go processPrivateMessages() 
@@ -299,4 +302,15 @@ func handleHelpCommand(conn net.Conn) {
 		"    Type any message without a command to broadcast to all users\n"
 
 	conn.Write([]byte(helpMessage))
+}
+
+func startUDPBroadcast() {
+	addr, _ := net.ResolveUDPAddr("udp", "255.255.255.255:9999")
+	conn, _ := net.DialUDP("udp", nil, addr)
+	defer conn.Close()
+
+	for {
+		conn.Write([]byte("CHAT_SERVER_HERE:8080"))
+		time.Sleep(3 * time.Second)
+	}
 }
